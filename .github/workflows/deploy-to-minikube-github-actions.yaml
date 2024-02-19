@@ -27,7 +27,11 @@ jobs:
     - name: Deploy to minikube
       run:
         kubectl apply -f k8s-node-app.yaml
-        kubectl rollout status deployment/nodejs-app -n default --timeout=5m
+    - name: Wait for minikube to be ready
+       run: |
+          until kubectl cluster-info &> /dev/null; do
+            sleep 5
+          done
     - name: Test service URLs
       run: |
           minikube service list
